@@ -66,6 +66,25 @@ public class Model {
         return bestMove;
     }
     
+    public int checkIfWinner(){        
+        // linhas
+        for(int i=0;i<3;i++){
+            if(gameBoard[i][0] == gameBoard[i][1] && gameBoard[i][0] == gameBoard[i][2] )
+            return gameBoard[i][0];
+        }
+        //colunas
+        for(int i=0;i<3;i++){
+            if(gameBoard[0][i] == gameBoard[1][i] && gameBoard[0][i] == gameBoard[2][i] )
+            return gameBoard[0][i];
+        }
+
+        // diagonais
+        if(gameBoard[0][0] == gameBoard[1][1] && gameBoard[0][0] == gameBoard[2][2]) return gameBoard[0][0];
+        if(gameBoard[0][2] == gameBoard[1][1] && gameBoard[0][2] == gameBoard[2][0]) return gameBoard[0][2];   
+        
+        return 0;
+    }
+    
     public void setPosition(int y, int x, int value){
         gameBoard[y][x] = value;
     }

@@ -29,5 +29,6 @@ public class View {
             
             if(i<2) System.out.println("\n-----");
         }
+        System.out.println("\n");
     }
 }
