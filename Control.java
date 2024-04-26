@@ -12,12 +12,20 @@ public class Control {
     private Model model = new Model();
     private View view = new View();
     private boolean currentPlayerIsUser = true;
+    
+    public void gameLoop(){
+        boolean gameRunning = true;
+        while(gameRunning){
+            startGame();
+            gameRunning = view.getPlayerInput();
+        }
+    }
 
     public void startGame(){
-        while(checkIfWinner(model) == 0 || checkIfWinner(model) == 2){
+        view.printBoard(model);
+        while(checkIfWinner(model) == 0 && !checkIfDraw(model)){
             if(currentPlayerIsUser){
-                view.printBoard(model);
-                
+
                 boolean rightPosition = false;
                 while(!rightPosition){
                     int[] playerMove = view.getPlayerMove();
@@ -29,17 +37,15 @@ public class Control {
                 currentPlayerIsUser = false;
             }
             else{
-                System.out.println("A máquina irá jogar");
+                view.printAIMessage();
                 int [] bestMove = getBestMove(model);
                 model.setPosition(bestMove[0],bestMove[1],1);
+                
+                view.printBoard(model);
                 currentPlayerIsUser = true;
             }
         }
-        String winner = "";
-        if(checkIfWinner(model) == 3) winner = "Player 1";
-        if(checkIfWinner(model) == 1) winner = "Player 2 (Máquina)";
-        view.printBoard(model);
-        System.out.println("O vencedor foi: "+winner);
+        view.printFinalMessage(checkIfWinner(model));
     }
     
     public int getScore(Model gameBoard){
@@ -77,18 +83,20 @@ public class Control {
         return totalScore;
     }
     
-    public boolean isCriticMove(int y, int x, Model gameBoard){
+    public int isCriticMove(int y, int x, Model gameBoard){
         int rowProduct = 1;
         for(int i=0;i<3;i++){
             rowProduct *= gameBoard.getPosition(y,i);
         }
-        if(rowProduct==9) return true;
-        
+        if(rowProduct==18) return 3;
+        if(rowProduct==2) return 1;
+
         int columnProduct = 1;
         for(int i=0;i<3;i++){
             columnProduct *= gameBoard.getPosition(i,x);
         }
-        if(columnProduct==9) return true;
+        if(columnProduct==18) return 3;
+        if(columnProduct==2) return 1;
         
         // está na diagonal primária
         if(y==x){
@@ -96,7 +104,9 @@ public class Control {
             for(int i=0;i<3;i++){
                 diagonalProduct *= gameBoard.getPosition(i,i);
             }
-            if(diagonalProduct==9) return true;
+            if(diagonalProduct==18) return 3;
+            if(diagonalProduct==2) return 1;
+
         }
         
         // está na diagonal secundária
@@ -105,52 +115,84 @@ public class Control {
             for(int i=0;i<3;i++){
                 diagonalProduct *= gameBoard.getPosition(i,2-i);
             }
-            if(diagonalProduct==9) return true;
+            if(diagonalProduct==18) return 3;
+            if(diagonalProduct==2) return 1;
         }
-        return false;
+        return 0;
     }
     
     public int[] getBestMove(Model gameBoard){
         int[] bestMove = new int[2];
         int lowestScore = 216;
+        
+        outerloop2:
         for(int i=0;i<3;i++){
             for(int y=0;y<3;y++){
                 if(gameBoard.getPosition(i,y)==2){
+                    if(isCriticMove(i,y, gameBoard) == 3){
+                        bestMove[0] = i;
+                        bestMove[1] = y;
+                        break outerloop2;
+                    }
+
                     gameBoard.setPosition(i,y,1);
                     if(getScore(gameBoard)<lowestScore){
                         lowestScore = getScore(gameBoard);
                         bestMove[0] = i;
                         bestMove[1] = y;
                     }
-                    else if(getScore(gameBoard)==lowestScore){
-                        if(isCriticMove(i,y, gameBoard)){
-                            lowestScore = getScore(gameBoard);
-                            bestMove[0] = i;
-                            bestMove[1] = y;
-                        }
-                    }
                     gameBoard.setPosition(i,y,2);
                 }
             }
         }
+        
+        outerloop1:
+        for(int i=0;i<3;i++){
+            for(int y=0;y<3;y++){
+                if(gameBoard.getPosition(i,y)==2){
+                    if(isCriticMove(i,y, gameBoard) == 1){
+                        bestMove[0] = i;
+                        bestMove[1] = y;
+                        break outerloop1;
+                    }
+                }
+            }
+        }
+        
         return bestMove;
+    }
+    
+    public boolean checkIfDraw(Model gameBoard){
+        boolean fullBoard = true;
+        for(int i=0;i<3;i++){
+            for(int y=0;y<3;y++){
+                if(gameBoard.getPosition(i,y)==2){
+                    fullBoard = false;
+                }
+            }
+        }
+        
+        if(checkIfWinner(gameBoard) != 1 && checkIfWinner(gameBoard) != 2 && fullBoard){
+            return true;
+        }
+        return false;
     }
     
     public int checkIfWinner(Model gameBoard){        
         // linhas
         for(int i=0;i<3;i++){
-            if(gameBoard.getPosition(i,0) == gameBoard.getPosition(i,1) && gameBoard.getPosition(i,0) == gameBoard.getPosition(i,2) )
+            if(gameBoard.getPosition(i,0) == gameBoard.getPosition(i,1) && gameBoard.getPosition(i,0) == gameBoard.getPosition(i,2) && gameBoard.getPosition(i,0) != 2)
             return gameBoard.getPosition(i,0);
         }
         //colunas
         for(int i=0;i<3;i++){
-            if(gameBoard.getPosition(0,i) == gameBoard.getPosition(1,i) && gameBoard.getPosition(0,i) == gameBoard.getPosition(2,i) )
+            if(gameBoard.getPosition(0,i) == gameBoard.getPosition(1,i) && gameBoard.getPosition(0,i) == gameBoard.getPosition(2,i) && gameBoard.getPosition(0,i) != 2)
             return gameBoard.getPosition(0,i);
         }
 
         // diagonais
-        if(gameBoard.getPosition(0,0) == gameBoard.getPosition(1,1) && gameBoard.getPosition(0,0) == gameBoard.getPosition(2,2)) return gameBoard.getPosition(0,0);
-        if(gameBoard.getPosition(0,2) == gameBoard.getPosition(1,1) && gameBoard.getPosition(0,2) == gameBoard.getPosition(2,0)) return gameBoard.getPosition(0,2);   
+        if(gameBoard.getPosition(0,0) == gameBoard.getPosition(1,1) && gameBoard.getPosition(0,0) == gameBoard.getPosition(2,2) && gameBoard.getPosition(0,0) != 2) return gameBoard.getPosition(0,0);
+        if(gameBoard.getPosition(0,2) == gameBoard.getPosition(1,1) && gameBoard.getPosition(0,2) == gameBoard.getPosition(2,0) && gameBoard.getPosition(0,2) != 2) return gameBoard.getPosition(0,2);   
         
         return 0;
     }

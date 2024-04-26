@@ -16,7 +16,7 @@ public class Jogovelha {
      */
     public static void main(String[] args) {
         Control control = new Control();
-        control.startGame();
+        control.gameLoop();
     }
     
 }
