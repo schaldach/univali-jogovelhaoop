@@ -16,6 +16,8 @@ public class Control {
     public void gameLoop(){
         boolean gameRunning = true;
         while(gameRunning){
+            model.resetBoard();
+            currentPlayerIsUser = view.getPlayerMoveOrder();
             startGame();
             gameRunning = view.getPlayerInput();
         }
