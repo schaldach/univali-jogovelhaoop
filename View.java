@@ -34,6 +34,18 @@ public class View {
         else return true;
     }
     
+    public boolean getPlayerMoveOrder(){
+        Scanner scanner = new Scanner(System.in);
+        int answer = -1;
+        while(answer != 1 && answer != 2){
+            System.out.println("Você quer jogar primeiro? (1 para jogar primeiro, 2 para jogar em segundo) ");
+            answer = scanner.nextInt();
+        }
+        if(answer == 1) return true;
+        return false;
+
+    }
+    
     public void printBoard(Model board){
         for(int i=0;i<3;i++){
             for(int y=0;y<3;y++){
