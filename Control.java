@@ -12,7 +12,8 @@ public class Control {
     private Model model = new Model();
     private View view = new View();
     private boolean currentPlayerIsUser = true;
-    
+
+    // método para iniciar um jogo e pedir para o usuário jogar novamente após o seu fim
     public void gameLoop(){
         boolean gameRunning = true;
         while(gameRunning){
@@ -25,16 +26,19 @@ public class Control {
 
     public void startGame(){
         view.printBoard(model);
+        // se não há vencedores e não há empate, o jogo continua
         while(checkIfWinner(model) == 0 && !checkIfDraw(model)){
             if(currentPlayerIsUser){
 
                 boolean rightPosition = false;
                 while(!rightPosition){
                     int[] playerMove = view.getPlayerMove();
+                    // verificando se a posição já está preenchida
                     if(model.getPosition(playerMove[0],playerMove[1]) != 2) {
                         view.printPositionEmptyError();
                         continue;
                     }
+                    // verificando se a posição está dentro dos limites (0 a 2)
                     rightPosition = model.setPosition(playerMove[0],playerMove[1],3);
                     if(!rightPosition) view.printPositionNumberError();
                 }
@@ -53,7 +57,8 @@ public class Control {
         }
         view.printFinalMessage(checkIfWinner(model));
     }
-    
+
+    // soma dos produtos de todas as linhas e colunas do tabuleiro
     public int getScore(Model gameBoard){
         int totalScore = 0;
         
@@ -88,7 +93,8 @@ public class Control {
         
         return totalScore;
     }
-    
+
+    // verificando se o movimento irá ganhar o jogo para qualquer um dos jogadores, retornará para qual jogador ele ganha (3=jogador, 1=máquina)
     public int isCriticMove(int y, int x, Model gameBoard){
         int rowProduct = 1;
         for(int i=0;i<3;i++){
@@ -130,7 +136,8 @@ public class Control {
     public int[] getBestMove(Model gameBoard){
         int[] bestMove = new int[2];
         int lowestScore = 216;
-        
+
+        // loop de menor prioridade, fará a jogada determinada pelo menor score do tabuleiro ou uma jogada defensiva se o oponente irá ganhar
         outerloop2:
         for(int i=0;i<3;i++){
             for(int y=0;y<3;y++){
@@ -151,7 +158,8 @@ public class Control {
                 }
             }
         }
-        
+
+        // loop de maior prioridade, fará uma jogada que ganhará o jogo se ela existir
         outerloop1:
         for(int i=0;i<3;i++){
             for(int y=0;y<3;y++){
@@ -167,7 +175,8 @@ public class Control {
         
         return bestMove;
     }
-    
+
+    // checa se houve empate, quando não há ganhadores e o tabuleiro está cheio
     public boolean checkIfDraw(Model gameBoard){
         boolean fullBoard = true;
         for(int i=0;i<3;i++){
@@ -178,12 +187,13 @@ public class Control {
             }
         }
         
-        if(checkIfWinner(gameBoard) != 1 && checkIfWinner(gameBoard) != 2 && fullBoard){
+        if(checkIfWinner(gameBoard) != 1 && checkIfWinner(gameBoard) != 2 && checkIfWinner(gameBoard) != 3 && fullBoard){
             return true;
         }
         return false;
     }
-    
+
+    // checa um ganhador quando alguma linha, coluna ou diagonal está totalmente preenchida (ela também retornará 2 caso uma linha, coluna ou diagonal esteja totalmente vazia)
     public int checkIfWinner(Model gameBoard){        
         // linhas
         for(int i=0;i<3;i++){
