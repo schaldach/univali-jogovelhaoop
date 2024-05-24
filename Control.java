@@ -31,9 +31,12 @@ public class Control {
                 boolean rightPosition = false;
                 while(!rightPosition){
                     int[] playerMove = view.getPlayerMove();
-                    if(model.getPosition(playerMove[0],playerMove[1]) != 2) continue;
+                    if(model.getPosition(playerMove[0],playerMove[1]) != 2) {
+                        view.printPositionEmptyError();
+                        continue;
+                    }
                     rightPosition = model.setPosition(playerMove[0],playerMove[1],3);
-                    if(!rightPosition) view.printPositionError();
+                    if(!rightPosition) view.printPositionNumberError();
                 }
                 
                 view.printBoard(model);
