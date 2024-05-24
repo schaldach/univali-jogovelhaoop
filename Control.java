@@ -33,6 +33,7 @@ public class Control {
                     int[] playerMove = view.getPlayerMove();
                     if(model.getPosition(playerMove[0],playerMove[1]) != 2) continue;
                     rightPosition = model.setPosition(playerMove[0],playerMove[1],3);
+                    if(!rightPosition) view.printPositionError();
                 }
                 
                 view.printBoard(model);
