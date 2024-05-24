@@ -28,8 +28,9 @@ public class Control {
         view.printBoard(model);
         // se não há vencedores e não há empate, o jogo continua
         while(checkIfWinner(model) == 0 && !checkIfDraw(model)){
-            if(currentPlayerIsUser){
 
+            // turno do jogador
+            if(currentPlayerIsUser){
                 boolean rightPosition = false;
                 while(!rightPosition){
                     int[] playerMove = view.getPlayerMove();
@@ -46,6 +47,7 @@ public class Control {
                 view.printBoard(model);
                 currentPlayerIsUser = false;
             }
+            // turno da máquina
             else{
                 view.printAIMessage();
                 int [] bestMove = getBestMove(model);
