@@ -66,6 +66,14 @@ public class View {
         }
         System.out.println("\n");
     }
+
+    public void printPositionEmptyError(){
+        System.out.println("A posição não é válida. A posição escolhida está preenchida.");
+    }
+
+    public void printPositionNumberError(){
+        System.out.println("A posição não é válida. Digite um número entre 0 e 2.");
+    }
     
     public void printAIMessage(){
         System.out.println("A máquina irá jogar");
