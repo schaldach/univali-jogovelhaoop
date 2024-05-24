@@ -10,6 +10,7 @@ package jogovelha;
  * @author 8069875
  */
 public class Model {
+    // tabuleiro totalmente vazio
     private int[][] gameBoard = {{2,2,2},{2,2,2},{2,2,2}};
     
     public void resetBoard(){
@@ -19,7 +20,7 @@ public class Model {
             }
         }
     }
-    
+    // falso se os valores não forem os esperados
     public boolean setPosition(int y, int x, int value){
         if(y<0 || y>2 || x<0 || x>2 || value <1 || value >3 ) return false;
         gameBoard[y][x] = value;
