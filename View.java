@@ -11,7 +11,6 @@ import java.util.Scanner;
  * @author 8069875
  */
 public class View { 
-
     public int[] getPlayerMove(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Digite as coordenadas da sua jogada: ");
@@ -22,7 +21,7 @@ public class View {
         int[] playerMoves = {i,j};
         return playerMoves;
     }
-    
+    // pegar o input se o jogador quer ou não continuar jogando
     public boolean getPlayerInput(){
         Scanner scanner = new Scanner(System.in);
         int answer = -1;
@@ -33,7 +32,7 @@ public class View {
         if(answer == 0) return false;
         else return true;
     }
-    
+    // pegar o input se o jogador quer começar jogando ou jogar depois
     public boolean getPlayerMoveOrder(){
         Scanner scanner = new Scanner(System.in);
         int answer = -1;
@@ -45,7 +44,7 @@ public class View {
         return false;
 
     }
-    
+    // imprimir cada posição do tabuleiro (1=máquina, 2=vazio, 3=jogador)
     public void printBoard(Model board){
         for(int i=0;i<3;i++){
             for(int y=0;y<3;y++){
@@ -78,7 +77,7 @@ public class View {
     public void printAIMessage(){
         System.out.println("A máquina irá jogar");
     }
-    
+    // anunciar o vencedor
     public void printFinalMessage(int winner){
         
         if(winner!=0){
